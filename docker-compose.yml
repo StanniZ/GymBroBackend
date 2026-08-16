@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-gymbro}
+      POSTGRES_USER: ${POSTGRES_USER:-gymbro}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_for_local_development}
+    volumes:
+      - gymbro_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-gymbro} -d ${POSTGRES_DB:-gymbro}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      APP_ENV: ${APP_ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-gymbro}:${POSTGRES_PASSWORD:-change_me_for_local_development}@db:5432/${POSTGRES_DB:-gymbro}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+volumes:
+  gymbro_postgres_data:
+

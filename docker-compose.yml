@@ -19,6 +19,8 @@ services:
       APP_ENV: ${APP_ENV:-development}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-gymbro}:${POSTGRES_PASSWORD:-change_me_for_local_development}@db:5432/${POSTGRES_DB:-gymbro}
+      APPLE_CLIENT_ID: ${APPLE_CLIENT_ID}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     ports:
       - "8000:8000"
     volumes:

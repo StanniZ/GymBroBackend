@@ -26,7 +26,7 @@ jobs:
         run: docker compose up -d --wait db
 
       - name: Run migrations and tests
-        run: docker compose run --rm api sh -c "alembic upgrade head && pytest -q"
+        run: docker compose run --rm api sh -c "alembic upgrade head && python -m pytest -q -p no:cacheprovider"
 
       - name: Show logs on failure
         if: failure()

@@ -1,0 +1,9 @@
+api.gymbroios.app {
+    encode zstd gzip
+    reverse_proxy api:8000
+}
+
+gymbroios.app, www.gymbroios.app {
+    encode zstd gzip
+    respond "GymBro website is coming soon." 200
+}
